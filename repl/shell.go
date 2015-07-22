@@ -1,9 +1,7 @@
 package repl
 
 import (
-	"encoding/json"
 	"fmt"
-	"os"
 	"reflect"
 	"strconv"
 	"strings"
@@ -92,55 +90,5 @@ func (shell *Shell) Run() {
 				}
 			}
 		}
-	}
-}
-
-func (shell *Shell) Quit(args string) {
-	os.Exit(0)
-}
-
-func (shell *Shell) Host(args string) {
-	shell.prompt.Host = args
-	shell.refreshClient()
-}
-
-func (shell *Shell) Port(args string) {
-	port, err := strconv.Atoi(args)
-	if err == nil {
-		shell.prompt.Port = port
-		shell.refreshClient()
-	} else {
-		util.LogError("Port must be a number")
-	}
-}
-
-func (shell *Shell) Index(args string) {
-	shell.prompt.Index = args
-}
-
-func (shell *Shell) Search(args string) {
-	service := shell.client.Search().Index(shell.prompt.Index)
-	for key, value := range parseTerms(args) {
-		service = service.Query(elastic.NewTermQuery(key, value))
-	}
-	searchResult, err := service.Do()
-	if err == nil {
-		util.LogInfo(fmt.Sprintf("Time: %d ms", searchResult.TookInMillis))
-		util.LogInfo(fmt.Sprintf("Total hits: %d", searchResult.TotalHits()))
-
-		if searchResult.Hits != nil {
-			for _, hit := range searchResult.Hits.Hits {
-				source, err := json.Marshal(&hit.Source)
-				if err == nil {
-					util.LogInfo(fmt.Sprint("ID: ", hit.Id))
-					util.LogInfo(string(source))
-					fmt.Println()
-				} else {
-					util.LogError(err.Error())
-				}
-			}
-		}
-	} else {
-		util.LogError(err.Error())
 	}
 }
