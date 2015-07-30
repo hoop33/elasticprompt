@@ -12,11 +12,9 @@ func TestNilOSReturnsEmpty(t *testing.T) {
 }
 
 func TestOSInformationIsPresent(t *testing.T) {
-	doc := `Memory: 1gb/1073741824
-Swap: 2gb/2147483648
-2 processors; 5s refresh interval
-Intel Itanium 4800MHz 512b cache
-2 sockets; 4 cores; 2 cores/socket
+	doc := `Intel Itanium -- 2 processors, 4800MHz, 512kb cache
+2 sockets; 4 cores
+Memory/Swap: 1048576kb/2097152kb
 `
 
 	nodeOS := &elastic.NodesInfoNodeOS{
@@ -57,11 +55,9 @@ Intel Itanium 4800MHz 512b cache
 }
 
 func TestSingularFormsDropS(t *testing.T) {
-	doc := `Memory: /0
-Swap: /0
-1 processor; 5s refresh interval
-  0MHz 0b cache
-0 sockets; 0 cores; 0 cores/socket
+	doc := `  -- 1 processor, 0MHz, 0kb cache
+0 sockets; 0 cores
+Memory/Swap: 0kb/0kb
 `
 	nodeOS := &elastic.NodesInfoNodeOS{
 		RefreshInterval:     "5s",

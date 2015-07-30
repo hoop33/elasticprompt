@@ -22,7 +22,7 @@ func (wrapper *NodeWrapper) String() string {
 
 	if node := wrapper.Node; node != nil {
 		// Name, version, build
-		buffer.WriteString(fmt.Sprintf("%s (%s/%s)\n", node.Name, node.Version, node.Build))
+		buffer.WriteString(fmt.Sprintf("%s (v%s/build %s)\n", node.Name, node.Version, node.Build))
 
 		// Host and IP
 		buffer.WriteString(fmt.Sprintf("%s/%s\n", node.Host, node.IP))

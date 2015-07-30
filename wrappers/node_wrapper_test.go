@@ -12,7 +12,7 @@ func TestNilNodeReturnsEmpty(t *testing.T) {
 }
 
 func TestBasicNodeInformationIsPresent(t *testing.T) {
-	doc := `My Cool Node (1.2.3/abcdef)
+	doc := `My Cool Node (v1.2.3/build abcdef)
 example/8.8.8.8
 -----
 `
