@@ -1,6 +1,7 @@
 package util
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 
@@ -42,6 +43,14 @@ func LogError(message string) {
 
 func LogSuccess(message string) {
 	fmt.Println(ColorSuccess(message))
+}
+
+func JsonString(value interface{}) (string, error) {
+	json, err := json.MarshalIndent(value, "", "  ")
+	if err == nil {
+		return string(json), nil
+	}
+	return "", err
 }
 
 func Die(err error) {

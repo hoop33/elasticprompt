@@ -5,11 +5,11 @@ import (
 	"github.com/olivere/elastic"
 )
 
-func (shell *Shell) Nodes(args string) {
-	service := elastic.NewNodesInfoService(shell.client)
-	response, err := service.Do()
+func (shell *Shell) Indices(args string) {
+	service := elastic.NewIndicesStatsService(shell.client)
+	result, err := service.Do()
 	if err == nil {
-		json, err := util.JsonString(response)
+		json, err := util.JsonString(result)
 		if err == nil {
 			util.LogInfo(json)
 		} else {
