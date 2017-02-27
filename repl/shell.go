@@ -11,13 +11,44 @@ import (
 	"gopkg.in/olivere/elastic.v3"
 )
 
+// Shell is the REPL
 type Shell struct {
 	prompt *Prompt
 	client *elastic.Client
 }
 
+// NewShell creates a new shell
 func NewShell() *Shell {
 	return &Shell{}
+}
+
+// Run runs the shell (REPL)
+func (shell *Shell) Run() {
+	shell.prompt = NewPrompt()
+	shell.refreshClient()
+
+	gl := goline.NewGoLine(shell.prompt)
+
+	for {
+		line, err := gl.Line()
+		if err != nil {
+			if err == goline.UserTerminatedError {
+				return
+			}
+			util.LogError(err.Error())
+		} else {
+			fmt.Println()
+			args := strings.Split(strings.TrimSpace(line), " ")
+			if len(args[0]) > 0 {
+				method := reflect.ValueOf(shell).MethodByName(strings.Title(args[0]))
+				if method.IsValid() {
+					method.Call([]reflect.Value{reflect.ValueOf(args[1:])})
+				} else {
+					util.LogError(fmt.Sprint("Unknown command: '", args[0], "'"))
+				}
+			}
+		}
+	}
 }
 
 func (shell *Shell) refreshClient() {
@@ -46,32 +77,4 @@ func parseTerms(args []string) map[string]string {
 		}
 	}
 	return terms
-}
-
-func (shell *Shell) Run() {
-	shell.prompt = NewPrompt()
-	shell.refreshClient()
-
-	gl := goline.NewGoLine(shell.prompt)
-
-	for {
-		line, err := gl.Line()
-		if err != nil {
-			if err == goline.UserTerminatedError {
-				return
-			}
-			util.LogError(err.Error())
-		} else {
-			fmt.Println()
-			args := strings.Split(strings.TrimSpace(line), " ")
-			if len(args[0]) > 0 {
-				method := reflect.ValueOf(shell).MethodByName(strings.Title(args[0]))
-				if method.IsValid() {
-					method.Call([]reflect.Value{reflect.ValueOf(args[1:])})
-				} else {
-					util.LogError(fmt.Sprint("Unknown command: '", args[0], "'"))
-				}
-			}
-		}
-	}
 }

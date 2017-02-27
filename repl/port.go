@@ -7,6 +7,7 @@ import (
 	"github.com/availity/av/util"
 )
 
+// Port changes the port
 func (shell *Shell) Port(args []string) {
 	if len(args) == 0 {
 		util.LogInfo(fmt.Sprintf("%d", shell.prompt.Port))

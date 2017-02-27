@@ -8,6 +8,7 @@ import (
 	"gopkg.in/olivere/elastic.v3"
 )
 
+// Search performs a search
 func (shell *Shell) Search(args []string) {
 	service := shell.client.Search().Index(shell.prompt.Index)
 	for key, value := range parseTerms(args) {
