@@ -40,7 +40,7 @@ test:
 	go test -cover $(PACKAGES)
 
 run:
-	go run server.go
+	go run main.go
 
 clean:
 	rm -rf dist/*
