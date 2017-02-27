@@ -1,19 +1,27 @@
 package repl
 
 import (
+	"fmt"
+
 	"github.com/hoop33/elasticprompt/util"
-	"github.com/olivere/elastic"
 )
 
-func (shell *Shell) Nodes(args string) {
-	service := elastic.NewNodesInfoService(shell.client)
-	response, err := service.Do()
+func (shell *Shell) Nodes(args []string) {
+	response, err := shell.client.NodesInfo().Do()
 	if err == nil {
-		json, err := util.JsonString(response)
-		if err == nil {
-			util.LogInfo(json)
+		// TODO fix this so it scales better
+		if len(args) > 0 && (args[0] == "-f" || args[0] == "--full") {
+			json, err := util.JsonString(response)
+			if err == nil {
+				util.LogInfo(json)
+			} else {
+				util.LogError(err.Error())
+			}
 		} else {
-			util.LogError(err.Error())
+			util.LogInfo(fmt.Sprintf("cluster name: %s", response.ClusterName))
+			for _, node := range response.Nodes {
+				util.LogInfo(node.Name)
+			}
 		}
 	} else {
 		util.LogError(err.Error())

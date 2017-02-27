@@ -8,7 +8,7 @@ import (
 
 	"github.com/hoop33/elasticprompt/util"
 	"github.com/nemith/goline"
-	"github.com/olivere/elastic"
+	"gopkg.in/olivere/elastic.v3"
 )
 
 type Shell struct {
@@ -33,24 +33,9 @@ func (shell *Shell) refreshClient() {
 	}
 }
 
-func parseLine(line string) (string, string) {
-	command := ""
-	arguments := ""
-
-	tokens := strings.SplitN(line, " ", 2)
-	count := len(tokens)
-	if count > 0 {
-		command = strings.Title(tokens[0])
-	}
-	if count > 1 {
-		arguments = tokens[1]
-	}
-	return command, arguments
-}
-
-func parseTerms(args string) map[string]string {
+func parseTerms(args []string) map[string]string {
 	terms := make(map[string]string)
-	for _, pair := range strings.Split(args, "&") {
+	for _, pair := range args {
 		if pair != "" {
 			parts := strings.SplitN(pair, "=", 2)
 			if len(parts) == 2 {
@@ -78,15 +63,13 @@ func (shell *Shell) Run() {
 			util.LogError(err.Error())
 		} else {
 			fmt.Println()
-			line = strings.TrimSpace(line)
-			if len(line) > 0 {
-				command, arguments := parseLine(line)
-
-				method := reflect.ValueOf(shell).MethodByName(command)
+			args := strings.Split(strings.TrimSpace(line), " ")
+			if len(args[0]) > 0 {
+				method := reflect.ValueOf(shell).MethodByName(strings.Title(args[0]))
 				if method.IsValid() {
-					method.Call([]reflect.Value{reflect.ValueOf(arguments)})
+					method.Call([]reflect.Value{reflect.ValueOf(args[1:])})
 				} else {
-					util.LogError(fmt.Sprint("Unknown command: '", command, "'"))
+					util.LogError(fmt.Sprint("Unknown command: '", args[0], "'"))
 				}
 			}
 		}

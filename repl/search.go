@@ -5,10 +5,10 @@ import (
 	"fmt"
 
 	"github.com/availity/av/util"
-	"github.com/olivere/elastic"
+	"gopkg.in/olivere/elastic.v3"
 )
 
-func (shell *Shell) Search(args string) {
+func (shell *Shell) Search(args []string) {
 	service := shell.client.Search().Index(shell.prompt.Index)
 	for key, value := range parseTerms(args) {
 		service = service.Query(elastic.NewTermQuery(key, value))

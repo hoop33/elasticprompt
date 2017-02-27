@@ -1,19 +1,22 @@
 package repl
 
-import (
-	"github.com/hoop33/elasticprompt/util"
-	"github.com/olivere/elastic"
-)
+import "github.com/hoop33/elasticprompt/util"
 
-func (shell *Shell) Indices(args string) {
-	service := elastic.NewIndicesStatsService(shell.client)
-	result, err := service.Do()
+func (shell *Shell) Indices(args []string) {
+	response, err := shell.client.IndexGet().Do()
 	if err == nil {
-		json, err := util.JsonString(result)
-		if err == nil {
-			util.LogInfo(json)
+		// TODO fix this so it scales better
+		if len(args) > 0 && (args[0] == "-f" || args[0] == "--full") {
+			json, err := util.JsonString(response)
+			if err == nil {
+				util.LogInfo(json)
+			} else {
+				util.LogError(err.Error())
+			}
 		} else {
-			util.LogError(err.Error())
+			for name, _ := range response {
+				util.LogInfo(name)
+			}
 		}
 	} else {
 		util.LogError(err.Error())
