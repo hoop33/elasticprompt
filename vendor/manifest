@@ -1,0 +1,22 @@
+{
+	"version": 0,
+	"dependencies": [
+		{
+			"importpath": "golang.org/x/net/context",
+			"repository": "https://go.googlesource.com/net",
+			"vcs": "git",
+			"revision": "10c134ea0df15f7e34d789338c7a2d76cc7a3ab9",
+			"branch": "master",
+			"path": "context",
+			"notests": true
+		},
+		{
+			"importpath": "gopkg.in/olivere/elastic.v3",
+			"repository": "https://gopkg.in/olivere/elastic.v3",
+			"vcs": "git",
+			"revision": "9da4058517104766446811c87c0890f26c03d945",
+			"branch": "master",
+			"notests": true
+		}
+	]
+}
