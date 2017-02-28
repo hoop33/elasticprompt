@@ -43,7 +43,7 @@ run:
 	go run main.go
 
 clean:
-	rm -rf dist/*
+	go clean && rm -rf dist/*
 
 deps:
 	go get -u github.com/FiloSottile/gvt
