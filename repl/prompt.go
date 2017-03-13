@@ -1,31 +1,22 @@
 package repl
 
-import (
-	"fmt"
-	"strconv"
-)
+import "fmt"
 
 // Prompt is the REPL prompt
 type Prompt struct {
-	Host  string
-	Port  int
+	URL   string
 	Index string
 }
 
 // NewPrompt creates a new prompt with the defaults (localhost:9200)
 func NewPrompt() *Prompt {
-	return &Prompt{
-		Host: "localhost",
-		Port: 9200,
-	}
+	return &Prompt{}
 }
 
 // Prompt displays the prompt
 func (prompt *Prompt) Prompt() string {
 	return fmt.Sprint(
-		prompt.Host,
-		":",
-		strconv.Itoa(prompt.Port),
+		prompt.URL,
 		" (",
 		prompt.Index,
 		") > ",

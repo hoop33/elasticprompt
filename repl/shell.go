@@ -1,31 +1,33 @@
 package repl
 
 import (
+	"context"
 	"fmt"
 	"reflect"
-	"strconv"
 	"strings"
 
 	"github.com/hoop33/elasticprompt/util"
 	"github.com/nemith/goline"
-	"gopkg.in/olivere/elastic.v3"
+	"gopkg.in/olivere/elastic.v5"
 )
 
 // Shell is the REPL
 type Shell struct {
 	prompt *Prompt
 	client *elastic.Client
+	ctx    context.Context
 }
 
 // NewShell creates a new shell
-func NewShell() *Shell {
-	return &Shell{}
+func NewShell(ctx context.Context) *Shell {
+	return &Shell{
+		ctx: ctx,
+	}
 }
 
 // Run runs the shell (REPL)
 func (shell *Shell) Run() {
 	shell.prompt = NewPrompt()
-	shell.refreshClient()
 
 	gl := goline.NewGoLine(shell.prompt)
 
@@ -48,19 +50,6 @@ func (shell *Shell) Run() {
 				}
 			}
 		}
-	}
-}
-
-func (shell *Shell) refreshClient() {
-	url := fmt.Sprint("http://", shell.prompt.Host, ":", strconv.Itoa(shell.prompt.Port), "/")
-	util.LogInfo(fmt.Sprint("Connecting to ", url, "..."))
-	client, err := elastic.NewClient(
-		elastic.SetURL(url),
-	)
-	if err == nil {
-		shell.client = client
-	} else {
-		util.LogError(err.Error())
 	}
 }
 

@@ -8,7 +8,7 @@ import (
 
 // Nodes gets the nodes
 func (shell *Shell) Nodes(args []string) {
-	response, err := shell.client.NodesInfo().Do()
+	response, err := shell.client.NodesInfo().Do(shell.ctx)
 	if err == nil {
 		// TODO fix this so it scales better
 		if len(args) > 0 && (args[0] == "-f" || args[0] == "--full") {

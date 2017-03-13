@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/availity/av/util"
-	"gopkg.in/olivere/elastic.v3"
+	"gopkg.in/olivere/elastic.v5"
 )
 
 // Search performs a search
@@ -14,7 +14,7 @@ func (shell *Shell) Search(args []string) {
 	for key, value := range parseTerms(args) {
 		service = service.Query(elastic.NewTermQuery(key, value))
 	}
-	searchResult, err := service.Do()
+	searchResult, err := service.Do(shell.ctx)
 	if err == nil {
 		util.LogInfo(fmt.Sprintf("Time: %d ms", searchResult.TookInMillis))
 		util.LogInfo(fmt.Sprintf("Total hits: %d", searchResult.TotalHits()))

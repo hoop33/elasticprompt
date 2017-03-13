@@ -2,13 +2,13 @@ package repl
 
 import (
 	"github.com/hoop33/elasticprompt/util"
-	"gopkg.in/olivere/elastic.v3"
+	"gopkg.in/olivere/elastic.v5"
 )
 
 // Ping pings the server
 func (shell *Shell) Ping(args []string) {
 	service := elastic.NewPingService(shell.client)
-	result, _, err := service.Do()
+	result, _, err := service.Do(shell.ctx)
 	if err == nil {
 		json, err := util.JSONString(result)
 		if err == nil {

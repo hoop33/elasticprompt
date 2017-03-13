@@ -47,7 +47,7 @@ coverage:
 	go tool cover -html=coverage-all.out
 
 run:
-	go run server.go
+	go run main.go
 
 clean:
 	rm -rf dist/*

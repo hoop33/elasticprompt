@@ -4,7 +4,7 @@ import "github.com/hoop33/elasticprompt/util"
 
 // Indices gets the indices
 func (shell *Shell) Indices(args []string) {
-	response, err := shell.client.IndexGet().Do()
+	response, err := shell.client.IndexGet().Do(shell.ctx)
 	if err == nil {
 		// TODO fix this so it scales better
 		if len(args) > 0 && (args[0] == "-f" || args[0] == "--full") {

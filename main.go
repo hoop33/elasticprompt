@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"os"
 
@@ -19,7 +20,7 @@ func main() {
 	}
 
 	app.Action = func(c *cli.Context) {
-		shell := repl.NewShell()
+		shell := repl.NewShell(context.Background())
 		shell.Run()
 	}
 
