@@ -23,7 +23,7 @@ import (
 
 const (
 	// Version is the current version of Elastic.
-	Version = "5.0.28"
+	Version = "5.0.34"
 
 	// DefaultURL is the default endpoint of Elasticsearch on the local machine.
 	// It is used e.g. when initializing a new Client without a specific URL.
@@ -1205,6 +1205,10 @@ func (c *Client) PerformRequest(ctx context.Context, method, path string, params
 
 		// Get response
 		res, err := ctxhttp.Do(ctx, c.c, (*http.Request)(req))
+		if err == context.Canceled || err == context.DeadlineExceeded {
+			// Proceed, but don't mark the node as dead
+			return nil, err
+		}
 		if err != nil {
 			n++
 			wait, ok, rerr := c.retrier.Retry(ctx, n, (*http.Request)(req), res, err)
@@ -1535,6 +1539,11 @@ func (c *Client) PutMapping() *IndicesPutMappingService {
 	return NewIndicesPutMappingService(c)
 }
 
+// GetFieldMapping gets mapping for fields.
+func (c *Client) GetFieldMapping() *IndicesGetFieldMappingService {
+	return NewIndicesGetFieldMappingService(c)
+}
+
 // -- cat APIs --
 
 // TODO cat aliases
@@ -1622,14 +1631,30 @@ func (c *Client) TasksList() *TasksListService {
 // -- Snapshot and Restore --
 
 // TODO Snapshot Create
-// TODO Snapshot Create Repository
 // TODO Snapshot Delete
-// TODO Snapshot Delete Repository
 // TODO Snapshot Get
-// TODO Snapshot Get Repository
 // TODO Snapshot Restore
 // TODO Snapshot Status
-// TODO Snapshot Verify Repository
+
+// SnapshotCreateRepository creates or updates a snapshot repository.
+func (c *Client) SnapshotCreateRepository(repository string) *SnapshotCreateRepositoryService {
+	return NewSnapshotCreateRepositoryService(c).Repository(repository)
+}
+
+// SnapshotDeleteRepository deletes a snapshot repository.
+func (c *Client) SnapshotDeleteRepository(repositories ...string) *SnapshotDeleteRepositoryService {
+	return NewSnapshotDeleteRepositoryService(c).Repository(repositories...)
+}
+
+// SnapshotGetRepository gets a snapshot repository.
+func (c *Client) SnapshotGetRepository(repositories ...string) *SnapshotGetRepositoryService {
+	return NewSnapshotGetRepositoryService(c).Repository(repositories...)
+}
+
+// SnapshotVerifyRepository verifies a snapshot repository.
+func (c *Client) SnapshotVerifyRepository(repository string) *SnapshotVerifyRepositoryService {
+	return NewSnapshotVerifyRepositoryService(c).Repository(repository)
+}
 
 // -- Helpers and shortcuts --
 
