@@ -19,9 +19,9 @@ func main() {
 		{Name: "Rob Warner", Email: "rwarner@grailbox.com"},
 	}
 
-	app.Action = func(c *cli.Context) {
+	app.Action = func(c *cli.Context) error {
 		shell := repl.NewShell(context.Background())
-		shell.Run()
+		return shell.Run()
 	}
 
 	if err := app.Run(os.Args); err != nil {

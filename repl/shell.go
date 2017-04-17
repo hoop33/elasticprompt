@@ -26,7 +26,7 @@ func NewShell(ctx context.Context) *Shell {
 }
 
 // Run runs the shell (REPL)
-func (shell *Shell) Run() {
+func (shell *Shell) Run() error {
 	shell.prompt = NewPrompt()
 
 	gl := goline.NewGoLine(shell.prompt)
@@ -35,7 +35,7 @@ func (shell *Shell) Run() {
 		line, err := gl.Line()
 		if err != nil {
 			if err == goline.UserTerminatedError {
-				return
+				return nil
 			}
 			util.LogError(err.Error())
 		} else {
