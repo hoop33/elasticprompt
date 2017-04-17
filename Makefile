@@ -22,7 +22,7 @@ linux:
 windows:
 	GOOS=windows go build -o $(DIST_DIR)/windows/$(PROG_NAME).exe
 
-check: vet lint errcheck interfacer test
+check: vet lint errcheck interfacer aligncheck structcheck varcheck unconvert gosimple staticcheck unused test
 
 vet:
 	go vet $(PACKAGES)
@@ -35,6 +35,27 @@ errcheck:
 
 interfacer:
 	interfacer $(PACKAGES)
+
+aligncheck:
+	aligncheck $(PACKAGES)
+
+structcheck:
+	structcheck $(PACKAGES)
+
+varcheck:
+	varcheck $(PACKAGES)
+
+unconvert:
+	unconvert -v $(PACKAGES)
+
+gosimple:
+	gosimple $(PACKAGES)
+
+staticcheck:
+	staticcheck $(PACKAGES)
+
+unused:
+	unused $(PACKAGES)
 
 test:
 	go test -cover $(PACKAGES)
@@ -50,10 +71,14 @@ run:
 	go run main.go
 
 clean:
-	rm -rf dist/*
+	go clean && rm -rf dist/*
 
 deps:
 	go get -u github.com/FiloSottile/gvt
 	go get -u github.com/golang/lint/golint
 	go get -u github.com/kisielk/errcheck
+	go get -u github.com/mdempsky/unconvert
 	go get -u github.com/mvdan/interfacer/cmd/interfacer
+	go get -u github.com/opennota/check/...
+	go get -u github.com/yosssi/goat/...
+	go get -u honnef.co/go/tools/...
