@@ -9,13 +9,13 @@ import (
 
 // Connect connects to an Elasticsearch instance
 func (shell *Shell) Connect(args []string) {
+	var url string
 	if len(args) == 0 {
-		util.LogError("You must specify the URL to the Elasticsearch host")
-		return
+		url = elastic.DefaultURL
+	} else {
+		url = args[0]
 	}
 
-	// TODO add port if not present
-	url := args[0]
 	util.LogInfo(fmt.Sprint("Connecting to ", url, "..."))
 	client, err := elastic.NewClient(
 		elastic.SetURL(url),
