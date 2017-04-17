@@ -11,7 +11,7 @@ type Prompt struct {
 	Index string
 }
 
-// NewPrompt creates a new prompt with the defaults (localhost:9200)
+// NewPrompt creates a new prompt
 func NewPrompt() *Prompt {
 	return &Prompt{}
 }
