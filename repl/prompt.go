@@ -1,6 +1,9 @@
 package repl
 
-import "fmt"
+import (
+	"bytes"
+	"fmt"
+)
 
 // Prompt is the REPL prompt
 type Prompt struct {
@@ -15,10 +18,16 @@ func NewPrompt() *Prompt {
 
 // Prompt displays the prompt
 func (prompt *Prompt) Prompt() string {
-	return fmt.Sprint(
-		prompt.URL,
-		" (",
-		prompt.Index,
-		") > ",
-	)
+	buf := bytes.NewBufferString("")
+
+	if prompt.URL != "" {
+		buf.WriteString(fmt.Sprintf("%s ", prompt.URL))
+	}
+
+	if prompt.Index != "" {
+		buf.WriteString(fmt.Sprintf("(%s) ", prompt.Index))
+	}
+
+	buf.WriteString("> ")
+	return buf.String()
 }
