@@ -1,12 +1,22 @@
 package repl
 
-import "github.com/availity/av/util"
+import "fmt"
 
 // Index sets the index
-func (shell *Shell) Index(args []string) {
-	if len(args) == 0 {
-		util.LogInfo(shell.prompt.Index)
-	} else {
-		shell.prompt.Index = args[0]
+func (shell *Shell) Index(args []string) (string, error) {
+	if !shell.IsConnected() {
+		return "", ErrNotConnected
 	}
+
+	if len(args) == 0 {
+		return shell.prompt.Index, nil
+	}
+
+	if args[0] == "*" {
+		shell.prompt.Index = ""
+		return "Index cleared", nil
+	}
+
+	shell.prompt.Index = args[0]
+	return fmt.Sprint("Index set to ", shell.prompt.Index), nil
 }

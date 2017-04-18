@@ -2,13 +2,13 @@ package repl
 
 import "github.com/hoop33/elasticprompt/util"
 
-// Nodes gets the nodes
-func (shell *Shell) Nodes(args []string) (string, error) {
+// Health shows the cluster health
+func (shell *Shell) Health(args []string) (string, error) {
 	if !shell.IsConnected() {
 		return "", ErrNotConnected
 	}
 
-	res, err := shell.client.NodesInfo().Do(shell.ctx)
+	res, err := shell.client.ClusterHealth().Do(shell.ctx)
 	if err != nil {
 		return "", err
 	}

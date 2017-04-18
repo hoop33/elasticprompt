@@ -1,37 +1,47 @@
 package repl
 
 import (
+	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 
-	"github.com/availity/av/util"
 	"gopkg.in/olivere/elastic.v5"
 )
 
 // Search performs a search
-func (shell *Shell) Search(args []string) {
+func (shell *Shell) Search(args []string) (string, error) {
+	if !shell.IsConnected() {
+		return "", ErrNotConnected
+	}
+
+	if shell.prompt.Index == "" {
+		return "", errors.New("Index required")
+	}
+
 	service := shell.client.Search().Index(shell.prompt.Index)
 	for key, value := range parseTerms(args) {
 		service = service.Query(elastic.NewTermQuery(key, value))
 	}
-	searchResult, err := service.Do(shell.ctx)
-	if err == nil {
-		util.LogInfo(fmt.Sprintf("Time: %d ms", searchResult.TookInMillis))
-		util.LogInfo(fmt.Sprintf("Total hits: %d", searchResult.TotalHits()))
-
-		if searchResult.Hits != nil {
-			for _, hit := range searchResult.Hits.Hits {
-				source, err := json.Marshal(&hit.Source)
-				if err == nil {
-					util.LogInfo(fmt.Sprint("ID: ", hit.Id))
-					util.LogInfo(string(source))
-					fmt.Println()
-				} else {
-					util.LogError(err.Error())
-				}
-			}
-		}
-	} else {
-		util.LogError(err.Error())
+	res, err := service.Do(shell.ctx)
+	if err != nil {
+		return "", err
 	}
+
+	buf := bytes.NewBufferString("")
+	buf.WriteString(fmt.Sprintf("Time: %d ms", res.TookInMillis))
+	buf.WriteString(fmt.Sprintf("Total hits: %d", res.TotalHits()))
+
+	if res.Hits != nil {
+		for _, hit := range res.Hits.Hits {
+			source, err := json.Marshal(&hit.Source)
+			if err != nil {
+				return "", err
+			}
+			buf.WriteString(fmt.Sprint("ID: ", hit.Id))
+			buf.WriteString(string(source))
+			buf.WriteString("\n")
+		}
+	}
+	return buf.String(), nil
 }
