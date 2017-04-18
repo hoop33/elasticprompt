@@ -5,28 +5,42 @@ import (
 	"fmt"
 )
 
-// Prompt is the REPL prompt
-type Prompt struct {
-	URL   string
-	Index string
+const (
+	outputText = "Text"
+	outputJSON = "JSON"
+)
+
+// prompt is the REPL prompt
+type prompt struct {
+	url    string
+	index  string
+	output string
 }
 
-// NewPrompt creates a new prompt
-func NewPrompt() *Prompt {
-	return &Prompt{}
+// newPrompt creates a new prompt
+func newPrompt() *prompt {
+	return &prompt{
+		output: outputText,
+	}
 }
 
-// Prompt displays the prompt
-func (prompt *Prompt) Prompt() string {
+// prompt displays the prompt
+func (prompt *prompt) Prompt() string {
 	buf := bytes.NewBufferString("")
 
-	if prompt.URL != "" {
-		buf.WriteString(fmt.Sprintf("%s ", prompt.URL))
+	if prompt.url != "" {
+		buf.WriteString(fmt.Sprintf("%s ", prompt.url))
 	}
 
-	if prompt.Index != "" {
-		buf.WriteString(fmt.Sprintf("(%s) ", prompt.Index))
+	if prompt.index != "" {
+		buf.WriteString(fmt.Sprintf("(%s) ", prompt.index))
 	}
+
+	if prompt.output == "" {
+		prompt.output = outputText
+	}
+
+	buf.WriteString(fmt.Sprintf("%c ", prompt.output[0]))
 
 	buf.WriteString("> ")
 	return buf.String()

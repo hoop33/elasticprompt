@@ -15,11 +15,11 @@ func (shell *Shell) Search(args []string) (string, error) {
 		return "", ErrNotConnected
 	}
 
-	if shell.prompt.Index == "" {
-		return "", errors.New("Index required")
+	if shell.prompt.index == "" {
+		return "", errors.New("index required")
 	}
 
-	service := shell.client.Search().Index(shell.prompt.Index)
+	service := shell.client.Search().Index(shell.prompt.index)
 	for key, value := range parseTerms(args) {
 		service = service.Query(elastic.NewTermQuery(key, value))
 	}

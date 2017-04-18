@@ -9,14 +9,14 @@ func (shell *Shell) Index(args []string) (string, error) {
 	}
 
 	if len(args) == 0 {
-		return shell.prompt.Index, nil
+		return shell.prompt.index, nil
 	}
 
 	if args[0] == "*" {
-		shell.prompt.Index = ""
-		return "Index cleared", nil
+		shell.prompt.index = ""
+		return "index cleared", nil
 	}
 
-	shell.prompt.Index = args[0]
-	return fmt.Sprint("Index set to ", shell.prompt.Index), nil
+	shell.prompt.index = args[0]
+	return fmt.Sprint("index set to ", shell.prompt.index), nil
 }

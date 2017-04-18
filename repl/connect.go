@@ -23,6 +23,6 @@ func (shell *Shell) Connect(args []string) (string, error) {
 	}
 
 	shell.client = client
-	shell.prompt.URL = url
+	shell.prompt.url = url
 	return fmt.Sprint("Connected to ", url), nil
 }

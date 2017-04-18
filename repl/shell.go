@@ -17,7 +17,7 @@ var ErrNotConnected = errors.New("Not connected")
 
 // Shell is the REPL
 type Shell struct {
-	prompt *Prompt
+	prompt *prompt
 	client *elastic.Client
 	ctx    context.Context
 }
@@ -36,7 +36,7 @@ func (shell *Shell) IsConnected() bool {
 
 // Run runs the shell (REPL)
 func (shell *Shell) Run() error {
-	shell.prompt = NewPrompt()
+	shell.prompt = newPrompt()
 
 	gl := goline.NewGoLine(shell.prompt)
 
