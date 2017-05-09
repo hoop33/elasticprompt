@@ -31,7 +31,7 @@ lint:
 	golint -set_exit_status $(PACKAGES)
 
 errcheck:
-	errcheck $(PACKAGES)
+	errcheck -verbose -exclude errcheck_excludes.txt $(PACKAGES)
 
 interfacer:
 	interfacer $(PACKAGES)

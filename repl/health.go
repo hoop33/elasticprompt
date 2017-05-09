@@ -1,6 +1,10 @@
 package repl
 
-import "github.com/hoop33/elasticprompt/util"
+import (
+	"fmt"
+
+	"github.com/hoop33/elasticprompt/util"
+)
 
 // Health shows the cluster health
 func (shell *Shell) Health(args []string) (string, error) {
@@ -12,5 +16,10 @@ func (shell *Shell) Health(args []string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
+	if shell.prompt.output == outputText {
+		return fmt.Sprintf("Name: %s; Status: %s; Nodes: %d", res.ClusterName, res.Status, res.NumberOfNodes), nil
+	}
+
 	return util.JSONString(res)
 }

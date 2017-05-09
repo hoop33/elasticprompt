@@ -4,11 +4,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"io"
 	"reflect"
 	"strings"
 
+	"github.com/chzyer/readline"
 	"github.com/hoop33/elasticprompt/util"
-	"github.com/nemith/goline"
 	"gopkg.in/olivere/elastic.v5"
 )
 
@@ -38,17 +39,20 @@ func (shell *Shell) IsConnected() bool {
 func (shell *Shell) Run() error {
 	shell.prompt = newPrompt()
 
-	gl := goline.NewGoLine(shell.prompt)
+	rl, err := readline.New(shell.prompt.Prompt())
+	if err != nil {
+		return err
+	}
+	defer rl.Close()
 
 	for {
-		line, err := gl.Line()
+		line, err := rl.Readline()
 		if err != nil {
-			if err == goline.UserTerminatedError {
+			if err == io.EOF {
 				return nil
 			}
 			util.LogError(err.Error())
 		} else {
-			fmt.Println()
 			args := strings.Split(strings.TrimSpace(line), " ")
 			if len(args[0]) > 0 {
 				method := reflect.ValueOf(shell).MethodByName(strings.Title(args[0]))
@@ -66,6 +70,7 @@ func (shell *Shell) Run() error {
 				}
 			}
 		}
+		rl.SetPrompt(shell.prompt.Prompt())
 	}
 }
 
